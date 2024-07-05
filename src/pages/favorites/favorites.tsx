@@ -4,6 +4,7 @@ import styles from './favorites.module.scss';
 import FavoriteHotelCard from '../../components/fav-hotel/fav-hotel';
 import { STopBar } from '@/components/signed-in-compenents/s-top-bar/s-top-bar';
 import { Footer } from '@/components/footer/footer';
+import { useNavigate } from 'react-router-dom';
 
 interface Hotel {
   id: string;
@@ -18,7 +19,8 @@ const FavoriteHotels: React.FC = () => {
   const [favoriteHotels, setFavoriteHotels] = useState<Hotel[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const fetchFavoriteHotels = async () => {
       if (!user) {
@@ -67,7 +69,11 @@ const FavoriteHotels: React.FC = () => {
 
     fetchFavoriteHotels();
   }, [user]);
-
+  const handleHotelClick = (_id: string) => {
+    navigate(`/hotel/${_id}`);
+    console.log("id",_id);
+    
+  };
   const handleRemoveFavorite = async (hotelId: string) => {
     if (!user) {
       setError('User not found');
@@ -117,12 +123,13 @@ const FavoriteHotels: React.FC = () => {
             favoriteHotels.map(hotel => (
               <FavoriteHotelCard
                 key={hotel.id}
-                id={hotel.id}
+                _id={hotel.id}
                 name={hotel.name}
                 image={hotel.image}
                 description={hotel.description}
                 average_stars={hotel.average_stars}
                 onRemoveFavorite={handleRemoveFavorite}
+                onClick={handleHotelClick}
               />
             ))
           )}

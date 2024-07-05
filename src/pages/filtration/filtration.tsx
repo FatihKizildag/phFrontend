@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styles from './filtration.module.scss';
-import RoomCard from '../../components/room-card/room-card';
-import { Rooms } from '../../components/room-card/room-card';
+import RoomCard, { Rooms } from '../../components/room-card/room-card';
 import { TopBar } from '@/components/top-bar/top-bar';
 import { Footer } from '@/components/footer/footer';
-import { Slider, Checkbox, FormControlLabel, Button } from '@mui/material';
-import useFetch from '../../hooks/useFetch';
+import { Slider, Checkbox, FormControlLabel, Button, Drawer, Modal, Box } from '@mui/material';
+import axios from 'axios';
+import STopBar from '@/components/signed-in-compenents/s-top-bar/s-top-bar';
 
 const Filtration: React.FC = () => {
   const location = useLocation();
   const [rooms, setRooms] = useState<Rooms[]>([]);
   const [priceRange, setPriceRange] = useState<number[]>([0, 2000]);
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<Rooms | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [hasToken, setHasToken] = useState<boolean>(false);
 
   const featureOptions = [
     "wifi",
@@ -28,7 +33,7 @@ const Filtration: React.FC = () => {
     "Bathroom with Bathtub",
     "Garden View",
   ];
-
+  // URL oluşturma fonksiyonu
   const createFetchUrl = () => {
     const params = new URLSearchParams(location.search);
     const city = params.get('city');
@@ -54,37 +59,51 @@ const Filtration: React.FC = () => {
     return `https://phbackend-9rp2.onrender.com/rooms/search-rooms?${queryString}`;
   };
 
-  const [fetchUrl, setFetchUrl] = useState(createFetchUrl());
-  const { data, loading, error } = useFetch(fetchUrl);
+  const fetchRooms = async () => {
+    const fetchUrl = createFetchUrl();
+    setLoading(true);
+    setError(null);
+    
+    const token = localStorage.getItem('token');
+    setHasToken(!!token);
+    
+    try {
+      const response = await axios.get(fetchUrl);
+
+      if (response.status === 200) {
+        const roomsData: Rooms[] = response.data.map((room: any) => ({
+          _id: room._id,
+          title: room.title,
+          adult: room.adult,
+          child: room.child,
+          doubleBed: room.doubleBed,
+          singleBed: room.singleBed,
+          features: room.features,
+          hotel: {
+            _id: room.hotel._id,
+            hotel_name: room.hotel.hotel_name,
+            city: room.hotel.city,
+            average_star: room.hotel.average_star,
+          },
+          price: room.price,
+          createdAt: room.createdAt,
+          updatedAt: room.updatedAt,
+        }));
+        setRooms(roomsData);
+      } else {
+        setError('Failed to fetch rooms. Please try again.');
+      }
+    } catch (error) {
+      setError('An error occurred while fetching rooms.');
+      console.error('Fetch rooms error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (data) {
-      const defaultImage = 'D:/phFrontend/src/assets/images/hotel.png';
-
-      const filteredRooms: Rooms[] = data.map((room: any) => ({
-        _id: room._id,
-        title: room.title,
-        adult: room.adult,
-        child: room.child,
-        doubleBed: room.doubleBed,
-        singleBed: room.doubleBed,
-        features: room.features,
-        hotel: {
-          _id: room.hotel._id,
-          hotel_name: room.hotel.hotel_name,
-          city: room.hotel.city,
-          average_star: room.hotel.average_star,
-        },
-        image: room.image.length < 0 ? room.image : [defaultImage],
-        price: room.price,
-        totalCapacity: room.capacity,
-        createdAt: room.createdAt,
-        updatedAt: room.updatedAt,
-      }));
-
-      setRooms(filteredRooms);
-    }
-  }, [data]);
+    fetchRooms();
+  }, [location.search, priceRange, selectedFeatures]);
 
   const handlePriceChange = (event: any, newValue: number | number[]) => {
     setPriceRange(newValue as number[]);
@@ -99,23 +118,53 @@ const Filtration: React.FC = () => {
     );
   };
 
-  const handleSearch = () => {
-    const newFetchUrl = createFetchUrl();
-    setFetchUrl(newFetchUrl);
+  const handleDetailsClick = (room: Rooms) => {
+    setSelectedRoom(room);
+    setDrawerOpen(true);
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleCloseDrawer = () => {
+    setDrawerOpen(false);
+  };
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const handleCreateReservation = async () => {
+    if (!selectedRoom) return;
+
+    const hotel = selectedRoom.hotel._id;
+    const roomId = selectedRoom._id;
+    const checkInDate = new URLSearchParams(location.search).get('checkInDate') || '';
+    const checkOutDate = new URLSearchParams(location.search).get('checkOutDate') || '';
+    const token = localStorage.getItem("token");
+    
+    try {
+      const response = await axios.post('https://phbackend-9rp2.onrender.com/bookings', {
+        roomId,
+        hotel: hotel,
+        checkInDate,
+        checkOutDate,
+      },{
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Token'i Authorization başlığına ekle
+        },
+      });
+
+      if (response.status === 200) {
+        alert('Reservation successfully created! Details can be viewed in history page.');
+        window.location.reload();
+      } else {
+        alert('Failed to create reservation. Please try again.');
+      }
+    } catch (error) {
+      alert('Please login to make reservation.');
+      console.error('Create reservation error:', error);
+    }
+  };
 
   return (
     <div className={styles.container}>
       <div className={styles.top}>
-        <TopBar />
+      {hasToken ? <STopBar /> : <TopBar />} 
       </div>
       <div className={styles.content}>
         <h2>Search Results</h2>
@@ -128,37 +177,79 @@ const Filtration: React.FC = () => {
                 onChange={handlePriceChange}
                 valueLabelDisplay="auto"
                 min={0}
-                max={2000}
+                max={5000}
                 step={50}
               />
               <p>Price Range: ${priceRange[0]} - ${priceRange[1]}</p>
             </div>
             <div className={styles.features}>
-            <h4>Features</h4>
+              <h4>Features</h4>
               {featureOptions.map((feature) => (
                 <FormControlLabel
                   key={feature}
-                  control={<Checkbox name={feature} onChange={handleFeatureChange} />}
+                  control={
+                    <Checkbox
+                      name={feature}
+                      onChange={handleFeatureChange}
+                    />
+                  }
                   label={feature}
                 />
               ))}
             </div>
-            <button onClick={handleSearch} >
+            <Button variant="contained" onClick={fetchRooms}>
               Search
-            </button>
+            </Button>
           </div>
           <div className={styles.results}>
-            {rooms.length > 0 ? (
-              rooms.map((room) => <RoomCard key={room._id} room={room} />)
+            {loading ? (
+              <div>Loading...</div>
+            ) : error ? (
+              <div>Error: {error}</div>
+            ) : rooms.length > 0 ? (
+              rooms.map((room) => (
+                <RoomCard key={room._id} room={room} onDetailsClick={() => handleDetailsClick(room)} />
+              ))
             ) : (
               <div>No rooms found.</div>
             )}
           </div>
         </div>
+        <Modal open={drawerOpen} onClose={handleCloseDrawer}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width:'400px',
+            height:'300px',
+            position: 'absolute' as 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            padding: '50px',
+            backgroundColor: '#3acbe1',
+            borderRadius: '10px',
+          }}
+        >
+          <h2>Room Details</h2>
+          {selectedRoom && (
+            <div className={styles.drawerContent}> 
+              <h3>{selectedRoom.title}</h3>
+              <p>Hotel: {selectedRoom.hotel.hotel_name}</p>
+              <p>City: {selectedRoom.hotel.city}</p>
+              <p>Price: ${selectedRoom.price}</p>
+              <button onClick={handleCreateReservation}>
+                Create Reservation
+              </button>
+            </div>
+          )}
+        </Box>
+      </Modal>
       </div>
-      <div className={styles.footer}>
-        <Footer />
-      </div>
+      <Footer />
+      
     </div>
   );
 };

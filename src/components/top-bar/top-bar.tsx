@@ -1,7 +1,6 @@
 import * as React from "react";
 import styles from "./top-bar.module.scss";
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 import {SignInModal} from "../sign-in/sign-in";
 import {SignUpModal} from "../sign-up/sign-up";
 

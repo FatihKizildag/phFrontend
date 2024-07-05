@@ -10,7 +10,23 @@
         justify-content: center;
     }
     .commentForm{
-        
-
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        .ratings{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            .rating{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+        .comment {
+            background-color: white;
+            width: 100%;
+          }
     }
 }

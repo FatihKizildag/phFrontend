@@ -22,7 +22,7 @@ const HotelCard: React.FC<Hotel> = ({ _id, name, image, description, average_sta
     return (
       <>
         {[...Array(count)].map((_, index) => (
-          <StarIcon key={index} style={{ color: '#FFD700' }} />
+          <StarIcon key={index} className={styles.star} />
         ))}
       </>
     );
@@ -33,7 +33,6 @@ const HotelCard: React.FC<Hotel> = ({ _id, name, image, description, average_sta
       onClick(_id);
       
       localStorage.setItem('hotelId',_id);
-      console.log("hotelcard id: ", _id, localStorage.getItem('hotelId'));
     }
   };
 
@@ -46,7 +45,7 @@ const HotelCard: React.FC<Hotel> = ({ _id, name, image, description, average_sta
           <p>{description}</p>
         </div>
         <div className={styles.actions}>
-          <div>{renderStars(Math.round(average_stars))}</div>
+          <div className={styles.stars}>{renderStars(Math.round(average_stars))}</div>
           <div className={styles.location}>{city}/{country}</div>
         </div>
       </div>

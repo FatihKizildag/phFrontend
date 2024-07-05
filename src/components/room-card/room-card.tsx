@@ -13,7 +13,6 @@ export interface Rooms {
   doubleBed: number;
   singleBed: number;
   features: string[];
-  image: string[];
   hotel: {
     _id: string;
     hotel_name: string;
@@ -26,10 +25,10 @@ export interface Rooms {
 
 interface RoomCardProps {
   room: Rooms;
+  onDetailsClick: () => void;
 }
 
-const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
-  const navigate = useNavigate();
+const RoomCard: React.FC<RoomCardProps> = ({ room, onDetailsClick }) => {
   const renderStars = (count: number) => {
     return (
       <>
@@ -40,47 +39,39 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
     );
   };
 
-  
-  const handleClick = (_id: string) => {
-    navigate(`/hotel/${room.hotel._id}`);
-    
-  };
-
   return (
     <article className={styles.card}>
-      <div className={styles.cardImg}>
-        <img className={styles.cardImgs} src={room.image[0]} alt={room.hotel.hotel_name} />
-      </div>
+      
       <div className={styles.projectInfo}>
         <div className={styles.flex}>
           <div className={styles.projectTitle}>{room.hotel.hotel_name}</div>
           <span>City: {room.hotel.city}</span>
         </div>
         <div className={styles.bottom}>
-       <div className={styles.left}>
-       <span>{room.title}</span>
-        <span>{room.doubleBed} Double Bed</span>
-        <span>{room.singleBed} Single Bed</span>
-        <span>{renderStars(Math.round(room.hotel.average_star))}</span>
-        </div> 
-        
-        <div className={styles.right}>
-        <span>{room.adult} Adult, {room.child} Child</span>
-        <span>{room.price}$</span>
-        <button onClick={handleClick}> Details</button>
+          <div className={styles.left}>
+            <span>{room.title}</span>
+            <span>{room.doubleBed} Double Bed</span>
+            <span>{room.singleBed} Single Bed</span>
+            <span>{renderStars(Math.round(room.hotel.average_star))}</span>
+          </div> 
+          
+          <div className={styles.right}>
+            <span>{room.adult} Adult, {room.child} Child</span>
+            <span>{room.price}$</span>
+            <button onClick={onDetailsClick}>Clik for Rezervation</button>
+          </div>
         </div>
         
-
-        </div>
-        
-        {/* <div>
+        {/* 
+        <div>
           <h4>Features:</h4>
           <ul>
             {room.features.map((feature, index) => (
               <li key={index}>{feature}</li>
             ))}
           </ul>
-        </div> */}
+        </div> 
+        */}
       </div>
     </article>
   );

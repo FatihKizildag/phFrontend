@@ -63,9 +63,6 @@ $gap: 30px;
       }
     }
   }
-
-  
-
   .footer {
     bottom: 0;
     left: 0;
@@ -73,4 +70,36 @@ $gap: 30px;
     display: flex;
     justify-content: center;
   }
+  
+}
+
+.drawer {
+  padding: 20px;
+  background-color: #3acbe1;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.drawerContent {
+  z-index: 1;
+  color: white;
+  width: 100%;
+  max-width: 500px;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+h3 {
+  margin-top: 0;
+}
+
+button {
+  margin-top: 20px;
 }

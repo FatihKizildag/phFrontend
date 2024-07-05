@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Use useNavigate if using react-router v6
+import { useNavigate } from 'react-router-dom';
 import styles from './search-bar.module.scss';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
@@ -7,7 +7,7 @@ import { Box, Button } from '@mui/material';
 import PersonCountPopover from '../person-count/person-count';
 
 interface SearchBarProps {
-  onSearch: (criteria: { city: string; checkInDate: string; checkOutDate: string; adult: number; child: number }) => void;
+  onSearch?: (criteria: { city: string; checkInDate: string; checkOutDate: string; adult: number; child: number }) => void;
 }
 
 export function SearchBar({ onSearch }: SearchBarProps) {
@@ -19,7 +19,7 @@ export function SearchBar({ onSearch }: SearchBarProps) {
   const [children, setChildren] = useState<number>(0);
   const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
 
-  const navigate = useNavigate(); // Use useNavigate if using react-router v6
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -31,7 +31,6 @@ export function SearchBar({ onSearch }: SearchBarProps) {
         const uniqueCities = Array.from(new Set(data.map(hotel => hotel.city)))
           .map(city => ({ city }));
 
-       // console.log("Fetched locations: ", uniqueCities);
         setLocations(uniqueCities);
       } catch (error) {
         console.error('Error fetching locations:', error);
@@ -42,15 +41,17 @@ export function SearchBar({ onSearch }: SearchBarProps) {
   }, []);
 
   const handleSearchClick = () => {
-    if (selectedCity && checkInDate && checkOutDate && adults + children > 0) {
+    if (selectedCity && checkInDate && checkOutDate && (adults + children > 0)) {
       const searchParams = new URLSearchParams({
         city: selectedCity.city,
         checkInDate,
         checkOutDate,
         adult: adults.toString(),
         child: children.toString(),
-      });
-      navigate(`/filtration?${searchParams.toString()}`);
+      }).toString();
+
+      navigate(`/filtration?${searchParams}`);
+      localStorage.setItem('searchParams', searchParams);
     } else {
       alert('Please fill in all search criteria.');
     }
