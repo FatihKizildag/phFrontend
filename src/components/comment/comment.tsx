@@ -3,6 +3,7 @@ import styles from './comment.module.scss';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
 export interface Comment {
+  _id:string;
   value: string;
   hygiene_star: number;
   safety_star: number;
@@ -25,28 +26,28 @@ export interface CommentProps {
 }
 
 const CommentCard: React.FC<CommentProps> = ({ comment }) => {
-  // Başlangıç değerini comment.likes olarak ayarlıyoruz
-  const [like, setLikes] = useState(comment.likes);
-  
-  const handleLike = () => {
-    // likes sayısını bir arttırıyoruz
-    setLikes(like + 1);
-  };
 
   const renderStars = (starCount: number) => {
-    return [...Array(5)].map((_, index) => (
-      <StarIcon key={index} filled={index < starCount} />
-    ));
+    return (
+      <>
+        {[...Array(starCount)].map((_, index) => (
+          <StarIcon key={index} filled={true} />
+        ))}
+        {[...Array(5 - starCount)].map((_, index) => (
+          <StarIcon key={index + starCount} filled={false} />
+        ))}
+      </>
+    );
   };
 
   return (
     <div className={styles.commentCard}>
       <div className={styles.header}>
-        <p className={styles.textXs}>{comment.user.first_name} {comment.user.last_name}</p>
+        <div className={styles.textXs}>
+          <h4>{comment.user.first_name} {comment.user.last_name}</h4>
+          <i>userType: {comment.user.userType}</i>
+        </div>
         <h3>{comment.hotel.hotel_name}</h3>
-      </div>
-      <div className={styles.body}>
-        <h3 className={styles.title}>{comment.value}</h3>
       </div>
       <div className={styles.details}>
         <div className={styles.stars}>
@@ -54,11 +55,12 @@ const CommentCard: React.FC<CommentProps> = ({ comment }) => {
           <p>Safety: {renderStars(comment.safety_star)}</p>
           <p>Transportation: {renderStars(comment.transportation_star)}</p>
         </div>
-        <div></div>
-        <div className={styles.likes}>
-          <FavoriteIcon onClick={handleLike} /> {like}
-        </div>
+        
       </div>
+      <div className={styles.body}>
+        <p className={styles.title}>{comment.value}</p>
+      </div>
+      
     </div>
   );
 };

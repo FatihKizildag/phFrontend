@@ -3,8 +3,8 @@
     justify-content: center;
     align-items: center;
     margin: 10px;
-    max-width: 300px;
-    max-height: 450px;
+    max-width: 80%;
+    max-height: 80%;
     border: 0px;
     border-radius: 10px;
     background-color: #3acbe1;
@@ -13,7 +13,7 @@
     .cardClass {
       border-radius: 8px;
       overflow: hidden;
-      width: 300px;
+      width: 100%;
       display: flex;
       flex-direction: column;
       margin: 10px 10px;
@@ -46,6 +46,11 @@
         gap: 5px; 
         margin-bottom: .2rem;
         padding: 5px 10px;
+        .stars{
+          .star{
+            color: #FFD700;
+          }
+        }
         .location{
           border-radius: 5px;
           padding: 5px;
@@ -55,6 +60,83 @@
           font-weight: bold;
         }
       }
+      
     }
   }
-  
+  @media only screen and (max-width: 1100px) {
+    .container {
+      width: 80%;
+      height: 60%;
+      .cardClass {
+        .media {
+          height: 30%;
+        }
+    
+        .content {
+          padding: 0px;
+          h3{
+            font-size: small;
+          }
+          p{
+            font-size: small;
+          }
+        }
+    
+        .actions {
+          display: flex;
+          .stars{
+            .star{
+              width: 12px;
+              height: 12px;
+              color: #FFD700;
+            }
+          }
+          .location{
+            padding: 3px;
+            font-size: xx-small;
+          }
+        }
+      }
+    }
+  }
+  @media only screen and (max-width: 412px) {
+    .container {
+      width: 5rem;
+      height: 10rem;
+      .cardClass {
+        .media {
+          height: 3rem;
+        }
+    
+        .content {
+          padding: 0px;
+          height: 4rem;
+          h3{
+            font-size: xx-small;
+          }
+          p{
+            font-size: 5px;
+          }
+        }
+    
+        .actions {
+          display: flex;
+          height: 1rem;
+          width: 100%;
+          .stars{
+            width: 50%;
+            .star{
+              width: 0.5rem;
+              height: 0.5rem;
+              color: #FFD700;
+            }
+          }
+          .location{
+            width: 50%;
+            padding: 3px;
+            font-size: 2px;
+          }
+        }
+      }
+    }
+  }

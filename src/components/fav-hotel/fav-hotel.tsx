@@ -4,19 +4,20 @@ import StarIcon from '@mui/icons-material/Star';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
 interface HotelCardProps {
-  id: string;
+  _id: string;
   name: string;
   image: string;
   description: string;
   average_stars: number;
   onRemoveFavorite: (hotelId: string) => Promise<void>;
+  onClick?: (id: string) => void;
 }
 
-const FavoriteHotelCard: React.FC<HotelCardProps> = ({ id, name, image, description, average_stars, onRemoveFavorite }) => {
+const FavoriteHotelCard: React.FC<HotelCardProps> = ({ _id, name, image, description, average_stars, onRemoveFavorite, onClick }) => {
   
 
   const handleRemoveFavorite = async () => {
-    await onRemoveFavorite(id);
+    await onRemoveFavorite(_id);
   };
 
   const renderStars = (count: number) => {
@@ -29,8 +30,17 @@ const FavoriteHotelCard: React.FC<HotelCardProps> = ({ id, name, image, descript
     );
   };
 
+  const handleClick = () => {
+    if (onClick) {
+      onClick(_id);
+      
+      localStorage.setItem('hotelId',_id);
+    }
+  };
+
+
   return (
-    <div className={styles.container}>
+    <div  onClick={handleClick} className={styles.container}>
       <div className={styles.cardClass}>
         <img className={styles.media} src={image[0]} alt={name} />
         <div className={styles.content}>
@@ -38,10 +48,11 @@ const FavoriteHotelCard: React.FC<HotelCardProps> = ({ id, name, image, descript
           <p>{description}</p>
         </div>
         <div className={styles.actions}>
+          
           {renderStars(Math.round(average_stars))}
-            <button className={styles.favoriteButton} onClick={handleRemoveFavorite}>
-            <FavoriteIcon style={{ color: 'red' }} />
-              </button>
+          
+          <FavoriteIcon className={styles.favoriteButton} onClick={handleRemoveFavorite}>
+          </FavoriteIcon>
           
         </div>
         

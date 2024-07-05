@@ -12,6 +12,7 @@ import CommentIcon from '@mui/icons-material/Comment';
 import { Favorite, History, Logout, AdminPanelSettings } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../AuthContext';
+import PersonIcon from '@mui/icons-material/Person';
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -46,8 +47,11 @@ export default function AccountMenu() {
             aria-controls={open ? 'account-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
+            sx={{width:"100%",height:"100%"}}
           >
-            <Avatar sx={{ width: 56, height: 56 }}>M</Avatar>
+            <Avatar sx={{ width: 56, height: 56, backgroundColor: "white" }}>
+              <PersonIcon sx={{ width:"50%",height:"50%",color:"#3acbe1"}}/>
+            </Avatar>
           </IconButton>
         </Tooltip>
       </Box>

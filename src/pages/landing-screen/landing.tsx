@@ -107,7 +107,9 @@ const Landing: React.FC = () => {
         {isLoggedIn ? <STopBar /> : <TopBar />}
       </div>
       <div className={styles.content}>
+        <div className={styles.search}>
         <SearchBar onSearch={handleSearch} />
+        </div>
         <div className={styles.middle}>
           <h3>Featured Hotels</h3>
           <SlideHotels hotels={top_hotels} />

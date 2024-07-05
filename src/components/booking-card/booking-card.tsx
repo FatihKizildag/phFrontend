@@ -1,16 +1,21 @@
 import React from 'react';
 import styles from './booking-card.module.scss';
-import { Card, CardContent, Typography } from '@mui/material';
-import {Hotel} from '../hotel-card/hotel-card';
+import { Box, Typography } from '@mui/material';
+ import {User} from '../../AuthContext'
 
 export interface Booking {
   _id: string;
   room: {
     _id: string;
+    title: string;
     hotel: string;
   };
-  user: string;
-  hotel: Hotel;
+  user: User;
+  hotel: {
+    _id: string;
+    hotel_name:string;
+    city: string;
+  };
   checkInDate: string;
   checkOutDate: string;
   createdAt: string;
@@ -26,19 +31,21 @@ const BookCard: React.FC<RoomCardProps> = ({ booking }) => {
   const checkOutDate = new Date(booking.checkOutDate).toLocaleDateString();
 
   return (
-    <Card className={styles.roomCard}>
-      <CardContent>
-        <Typography variant="h6">Booking ID: {booking._id}</Typography>
-        <Typography variant="body1">Hotel ID: {booking.hotel.name}</Typography>
-        <Typography variant="body1">Room ID: {booking.room._id}</Typography>
-        <Typography variant="body1">Check-In: {checkInDate}</Typography>
-        <Typography variant="body1">Check-Out: {checkOutDate}</Typography>
+    <Box className={styles.roomCard}>
+      <div style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
+        <p>Check-In: {checkInDate}</p>
+        <p>Check-Out: {checkOutDate}</p>
+      </div>
+        <p>Dear <b>{booking.user.first_name} {booking.user.last_name}</b></p>
+        <p>Hotel Name: <b>{booking.hotel.hotel_name}</b></p>
+        <p>Room title: <b>{booking.room.title}</b></p>
+        
         <br />
         <Typography variant="body2" color="textSecondary">
           Created At: {new Date(booking.createdAt).toLocaleDateString()}
+          <p style={{display:"flex", justifyContent:"center"}}>Contact us for reservation changes</p>
         </Typography>
-      </CardContent>
-    </Card>
+    </Box>
   );
 };
 

@@ -118,34 +118,18 @@ const Rezervations: React.FC = () => {
                           <TableCell>Hotel Name</TableCell>
                           <TableCell>Check-In Date</TableCell>
                           <TableCell>Check-Out Date</TableCell>
-                          <TableCell>Status</TableCell>
-                          <TableCell>Actions</TableCell>
+                          
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {paginatedReservations.map((reservation) => (
                           <TableRow key={reservation._id}>
-                            <TableCell>{`${reservation.user.first_name} ${reservation.user.last_name}`}</TableCell>
+                            <TableCell sx={{textTransform:"capitalize"}}>{`${reservation.user.first_name} ${reservation.user.last_name}`}</TableCell>
                             <TableCell>{reservation.room.title}</TableCell>
                             <TableCell>{reservation.hotel.hotel_name}</TableCell>
                             <TableCell>{new Date(reservation.checkInDate).toLocaleDateString()}</TableCell>
                             <TableCell>{new Date(reservation.checkOutDate).toLocaleDateString()}</TableCell>
-                            <TableCell>
-                              {reservation.status ? (
-                                <Typography color="green">Approved</Typography>
-                              ) : (
-                                <Typography color="red">Pending</Typography>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => handleStatusChange(reservation._id, !reservation.status)}
-                              >
-                                {reservation.status ? "Unapprove" : "Approve"}
-                              </Button>
-                            </TableCell>
+                            
                           </TableRow>
                         ))}
                       </TableBody>

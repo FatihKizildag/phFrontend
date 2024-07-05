@@ -6,13 +6,11 @@ import { STopBar } from '../../components/signed-in-compenents/s-top-bar/s-top-b
 import styles from './hotel-page.module.scss';
 import { Tabs, Tab, Box } from '@mui/material';
 import PreviewIcon from '@mui/icons-material/Preview';
-import RoomServiceIcon from '@mui/icons-material/RoomService';
 import CommentIcon from '@mui/icons-material/Comment';
 import Preview from '@/components/preview/preview';
 import axios from 'axios';
 import { Hotel } from '../../components/hotel-card/hotel-card';
 import HotelComment from '@/components/hotel-comment/hotel-comment';
-import  RoomCard  from '../../components/room-card/room-card';
 
 interface TabPanelProps {
   children?: React.ReactNode;

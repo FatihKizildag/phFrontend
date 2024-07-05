@@ -117,4 +117,4 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 };
 
-export { AuthProvider, useAuth };
+export { AuthProvider, useAuth};
